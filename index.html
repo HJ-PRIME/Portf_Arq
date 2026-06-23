@@ -17,7 +17,7 @@
   --accent-cyan:#00f0ff;
   --accent-purple:#a855f7;
   --glass-bg:rgba(255,255,255,0.03);
-  --glass-border:rgba(255,255,255,0.06);
+  --glass-border:rgba(s255,255,255,0.06);
   --text-primary:#ffffff;
   --text-secondary:rgba(255,255,255,0.55);
 }
@@ -1063,20 +1063,22 @@ function renderUnit(tabId){
         '<i class="fas fa-cloud-arrow-up" style="margin-right:6px;"></i>Subir Archivo'+
       '</button>'+
     '</div>'+
-    '<div class="files-grid" id="filesGrid-'+unitNum+'-'+currentWeek+'">'+
-      '<div class="loading"><i class="fas fa-spinner"></i><p>Cargando archivos...</p></div>'+
-    '</div>';
+    '<div class="files-wrap" id="filesWrap-'+unitNum+'"></div>';
+
+  function switchWeek(w){
+    currentWeek=w;
+    container.querySelectorAll('.week-btn').forEach(function(x){x.classList.remove('active');});
+    container.querySelector('.week-btn[data-week="'+w+'"]').classList.add('active');
+    var wrap=document.getElementById('filesWrap-'+unitNum);
+    wrap.innerHTML='<div class="files-grid" id="filesGrid-'+unitNum+'-'+w+'"><div class="loading"><i class="fas fa-spinner"></i><p>Cargando archivos...</p></div></div>';
+    loadFiles(unitNum,w);
+  }
 
   container.querySelectorAll('.week-btn').forEach(function(b){
-    b.addEventListener('click',function(){
-      container.querySelectorAll('.week-btn').forEach(function(x){x.classList.remove('active');});
-      this.classList.add('active');
-      currentWeek=parseInt(this.dataset.week);
-      loadFiles(unitNum,currentWeek);
-    });
+    b.addEventListener('click',function(){switchWeek(parseInt(this.dataset.week));});
   });
 
-  loadFiles(unitNum,currentWeek);
+  switchWeek(currentWeek);
 }
 
 function renderCurrentUnit(){
